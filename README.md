@@ -21,7 +21,13 @@ Per accedere globalmente al template qui definito:
 2. Clonare la repo in questa cartella:
 
 ```bash
-git clone ...
+git clone https://github.com/tech-wave-swe/DocumentStyle.git
+```
+
+or
+
+```bash
+git clone git@github.com:tech-wave-swe/DocumentStyle.git
 ```
 
 ## Utilizzare il template
