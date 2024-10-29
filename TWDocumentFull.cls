@@ -225,3 +225,13 @@
     \noindent
 
 }
+
+% SIGNATURE SPACE
+\newcommand{\signature}[1]{%
+    \vfill
+    \begin{flushright}
+        \textit{#1}
+        \vspace{0.5cm} \\
+        \noindent\rule{5cm}{0.4pt} % Adjust width and thickness of the line
+    \end{flushright}
+}

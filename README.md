@@ -60,7 +60,7 @@ git clone git@github.com:tech-wave-swe/DocumentStyle.git
     \item Lista di argomenti da trattare durante il meeting
 \end{itemize}
 
-\section*{Resaconto}
+\section*{Resoconto}
 \begin{itemize}
     \item Resoconto del meeting
 \end{itemize}
@@ -75,4 +75,12 @@ git clone git@github.com:tech-wave-swe/DocumentStyle.git
 \tasklist
 
 \end{document}
+```
+
+#### Verbali esterni
+
+Per quanto riguarda la stesura di verbali esterni è necessaria l'approvazione da parte dell'azienda proponente. è quindi necessario l'inserimento di un campo `signature` tramite il seguente comando:
+
+```latex
+\signature{L'Azienda Proponente}
 ```
