@@ -14,38 +14,56 @@
 
 % GENERAL PACKAGES
 \usepackage{etoolbox, titlesec}
+\usepackage{tabularx}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{caption}
 
 % GRAPHICS
 \RequirePackage{graphicx}
-\graphicspath{{./images}}
+\graphicspath{{static/img}}
 \newcommand{\@mainlogo}{logo.png}
 
 % PAGE MARGINS
 \RequirePackage[top=4.75cm,        bottom=2.5cm,
-                left=2.3cm,        right=2.3cm,
+                left=2cm,        right=2cm,
                 headheight=4.25cm, headsep=5mm,
                 footskip=2.5ex]{geometry}
 
 % COLORS
-\RequirePackage{xcolor}
+\RequirePackage[table]{xcolor}
 \definecolor{twgray}{RGB/cmyk}{235,235,230/0,0,0,.1}
 \definecolor{twblue}{HTML}{35A8F6}
 \colorlet{twlightblue}{twblue!20}
 
+\newcommand{\tightlist}{
+    \setlength{\itemsep}{0pt}  % Remove vertical space between items
+    \setlength{\parskip}{0pt}  % Remove space between paragraphs
+}
+
 % CUSTOM FONTS
+\usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
+\usepackage{textcomp}
 \usepackage{lmodern}
 \usepackage{slantsc}
-\usepackage{relsize} 
+\usepackage{relsize}
+\usepackage{enumitem}
+\usepackage{tabularray}
+\usepackage{framed}
+\usepackage{listings}
+
 
 \renewcommand*\familydefault{\sfdefault}
 \usefont{T1}{lmss}{m}{n}\selectfont
-\DeclareFontShape{T1}{lmss}{m}{sc}{<->ssub*lmss/m/n}{} 
+\DeclareFontShape{T1}{lmss}{m}{sc}{<->ssub*lmss/m/n}{}
 
 \newcommand{\@labeltext}[1]{\textbf{\scriptsize #1}}
 \newcommand{\@LabelText}[1]{\MakeUppercase{\@labeltext{#1}}}
+\newcommand{\LabelText}[1]{\@LabelText{#1}}
 
 \newcommand{\@LabelValue}[1]{\scriptsize #1}
+\newcommand{\LabelValue}[1]{\@LabelValue{#1}}
 
 % SEPARATOR
 \newcommand{\@separator}{%
@@ -77,7 +95,7 @@
     TechWave - \@title/\@version
   \end{minipage}%
   \hfill
-  \thepage\ of \PlainPageRef{LastPage}
+  \thepage\ of \pageref{LastPage}
   \hspace*{\tabcolsep}\newline
   \@separator
 }
@@ -98,7 +116,7 @@
 \newcommand{\@tasktable}{}
 \newcommand{\tasklist}{%
   \subsection*{Attività Assegnate}%
-  \vspace{-\baselineskip} 
+  \vspace{-\baselineskip}
   \begin{longtable}{rp{0.55\textwidth}p{0.2\textwidth}l}
     \multicolumn{4}{@{}c@{}}{\@separator}\\*
     \@LabelText{\#} & \@LabelText{Task} &
@@ -118,7 +136,7 @@
 
 % REDATTORI
 % Initialize an empty list for editors
-\newcommand{\editorlist}{} 
+\newcommand{\editorlist}{}
 \newcommand{\firsteditor}{true} % A flag to check if it's the first editor
 
 % Define the \editor command to add a new editor to the list
@@ -130,7 +148,7 @@
 
 % VERIFICATORI
 % Initialize an empty list for editors
-\newcommand{\reviewerlist}{} 
+\newcommand{\reviewerlist}{}
 \newcommand{\firstreviewer}{true} % A flag to check if it's the first editor
 
 % Define the \editor command to add a new editor to the list
@@ -141,19 +159,29 @@
 }
 
 % CLASSIFICAZIONE
+\def\@classification{}
 \newcommand{\classification}[1]{\def\@classification{#1}}
+\newcommand{\getclassification}{\@classification}
+
+% DURATA
+\def\@duration{}
+\newcommand{\duration}[1]{\def\@duration{#1}}
+\newcommand{\getduration}{\@duration}
 
 % VERSIONE
+\def\@version{}
 \newcommand{\version}[1]{\def\@version{#1}}
+\newcommand{\getversion}{\@version}
 
 % FRONTMATTER
 \usepackage[italian]{datetime2}
 \RequirePackage{colortbl,tabularx,setspace,rotating,ltxtable}
+
 \newcommand{\frontmatter}{%
 
     \newgeometry{left=3.5cm, right=3.5cm}%
 
-    \begin{titlepage}      
+    \begin{titlepage}
         \begin{center}
 
             \raisebox{1cm}{\includegraphics[height=3cm]{logo_unipd.png}}
@@ -163,9 +191,52 @@
             % \includegraphics[height=5cm]{\@mainlogo}
             % \includegraphics[height=3cm]{logo_unipd.png}
             \vspace{1cm}
-            \small\textcolor{darkgray}{techwave.unipd@gmail.com}
-            \vspace{0.5cm} \\
-            \huge\textbf \@title \\
+            \small\textcolor{darkgray}{techwave.unipd@gmail.com} \\
+            \vspace{0.5cm}
+            \huge\textbf \@title
+            \ifhidedate
+                {}
+            \else
+                \Large \@date \\
+            \fi
+        \end{center}
+
+        \vspace{2cm}
+
+        \noindent Dettagli documento: \\
+
+        \ifthenelse{\equal{\editorlist}{}}{}{\noindent\parbox{\textwidth}{\@labeltext{Redatto da:} \@LabelValue{\editorlist}}}
+        \ifthenelse{\equal{\reviewerlist}{}}{}{\noindent\parbox{\textwidth}{\@labeltext{Revisionato da:} \@LabelValue{\reviewerlist}}}
+        \ifx\@duration\empty
+        \else
+            \noindent\parbox{\textwidth}{\@labeltext{Durata riunione:} \@LabelValue{\@duration}}
+        \fi
+        \noindent\parbox{\textwidth}
+        {\@labeltext{Classificazione:} \@LabelValue{\@classification}}
+        \noindent\parbox{\textwidth}{\@labeltext{Versione:} \@LabelValue{\@version}}
+
+    \end{titlepage}
+
+    \restoregeometry
+}
+
+\newcommand{\frontmatterLessDetail}{%
+
+    \newgeometry{left=3.5cm, right=3.5cm}%
+
+    \begin{titlepage}
+        \begin{center}
+
+            \raisebox{1cm}{\includegraphics[height=3cm]{logo_unipd.png}}
+            \hspace{0.5cm} % Space between images, adjust as needed
+            \raisebox{0cm}{\includegraphics[height=5cm]{\@mainlogo}}%
+
+            % \includegraphics[height=5cm]{\@mainlogo}
+            % \includegraphics[height=3cm]{logo_unipd.png}
+            \vspace{1cm}
+            \small\textcolor{darkgray}{techwave.unipd@gmail.com} \\
+            \vspace{0.5cm}
+            \huge\textbf \@title
             \ifhidedate
                 {}
             \else
@@ -179,9 +250,8 @@
 
         \noindent\parbox{\textwidth}{\@labeltext{Redatto da:} \@LabelValue{\editorlist}}
         \noindent\parbox{\textwidth}{\@labeltext{Revisionato da:} \@LabelValue{\reviewerlist}}
-        \noindent\parbox{\textwidth}{\@labeltext{Classificazione:} \@LabelValue{\@classification}}
+        {\@labeltext{Classificazione:} \@LabelValue{\@classification}}
         \noindent\parbox{\textwidth}{\@labeltext{Versione:} \@LabelValue{\@version}}
-       
 
     \end{titlepage}
 
@@ -189,7 +259,7 @@
 }
 
 % PARTECIPANTS
-
+\usepackage{colortbl}
 \newcommand{\showPartecipants}{%
 
     \rowcolors{4}{}{twlightblue}%
@@ -234,4 +304,92 @@
         \vspace{0.5cm} \\
         \noindent\rule{5cm}{0.4pt} % Adjust width and thickness of the line
     \end{flushright}
+}
+
+% Images
+
+\newcommand{\floatimage}[5]{
+  \begin{wrapfigure}{#1}{#2\textwidth}
+    \centering
+    \includegraphics[width=0.9\linewidth #5]{#3}
+    \captionof{figure}{#4}
+    \label{fig:wrapfig}
+  \end{wrapfigure}
+}
+
+\newcommand{\floatleft}[4]{
+  \floatimage{l}{#1}{#2}{#3}{#4}
+}
+
+\newcommand{\floatright}[4]{
+  \floatimage{r}{#1}{#2}{#3}{#4}
+}
+
+\newcommand{\itemimage}[6]{
+  % #1 item text
+  % #2 l / r : left or right position of the image
+  % #3 size of the image
+  % #4 image
+  % #5 caption
+  % #6 text
+  \vspace{-1.7em}
+  \parbox[t]{\dimexpr\textwidth-\leftmargin}{%
+    \item[#1]
+    \begin{wrapfigure}{#2}{#3\textwidth}
+        \vspace{-12pt}
+        \includegraphics[width=\linewidth]{#4}
+        \vspace{-29pt}\caption{#5}\vspace{-30pt}
+    \end{wrapfigure}
+    \setlength{\parskip}{0.8em}
+    #6
+  }
+}
+
+\renewcommand{\tableofcontents}{%
+  \cleardoublepage
+  \@starttoc{toc}
+  \newpage
+}
+
+\newcommand{\fullpageLoF}{
+    \clearpage  % Start a new page
+    \addcontentsline{toc}{section}{List of Figures}  % Add to TOC (optional)
+    \listoffigures  % Print the list of figures
+    \newpage  % Ensure a page break after the LoF
+}
+
+\RequirePackage{tabularray}
+\UseTblrLibrary{varwidth}
+
+\SetTblrInner{
+    vlines,
+    hlines,
+}
+% Example of limiting the dimension of a column
+\NewTblrEnviron{mytable}
+\SetTblrInner[mytable]{
+    vlines,
+    hlines,
+    rowsep=6pt,
+    colsep=12pt,
+}
+
+\newcommand{\passthrough}[1]{#1}
+
+\lstset{
+    basicstyle=\ttfamily,
+    numbers=left,
+    numberstyle=\footnotesize,
+    stepnumber=2,
+    numbersep=5pt,
+    backgroundcolor=\color{black!10},
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2,
+    captionpos=b,
+    breaklines=true,
+    breakatwhitespace=true,
+    breakautoindent=true,
+    linewidth=\textwidth
 }
