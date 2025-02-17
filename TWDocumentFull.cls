@@ -53,6 +53,8 @@
 \usepackage{framed}
 \usepackage{listings}
 
+\usepackage{newunicodechar}
+\newunicodechar{≤}{\ensuremath{\leq}}
 
 \renewcommand*\familydefault{\sfdefault}
 \usefont{T1}{lmss}{m}{n}\selectfont
