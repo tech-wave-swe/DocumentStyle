@@ -52,9 +52,14 @@
 \usepackage{tabularray}
 \usepackage{framed}
 \usepackage{listings}
+\usepackage{float}
 
 \usepackage{newunicodechar}
 \newunicodechar{≤}{\ensuremath{\leq}}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{−}{\ensuremath{-}}
+
+\setlength{\parindent}{0pt}
 
 \renewcommand*\familydefault{\sfdefault}
 \usefont{T1}{lmss}{m}{n}\selectfont
